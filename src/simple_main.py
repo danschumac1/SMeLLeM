@@ -1,5 +1,5 @@
 '''
-python ./src/main.py
+python ./src/simple_main.py
 '''
 
 import json
@@ -32,7 +32,8 @@ def main():
     )
 
     trend = prompter.analyze_trend(data_gen.data_str)
-    print(f"Trend: {trend.direction}")
+    print(f"Predicted Trend: {trend.direction}")
+    print(f"Ground Truth: {data_gen.label}")
 
 if __name__ == '__main__':
     main()
