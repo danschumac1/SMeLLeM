@@ -24,7 +24,7 @@ def main():
     data_gen.create_time_series_data(
         slope=0.1,
         intercept=0.5,
-        noise=0.1,  # ✅ Renamed from `error` to `noise`
+        noise=0.1,
         start=start,
         end=end,
         num_points=20,
