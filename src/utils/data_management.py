@@ -72,16 +72,26 @@ class Prompter:
             # Pass JSON to Pydantic for validation
             return model.parse_obj(parsed_json)
         except Exception as e:
-            raise ValueError(f"Failed to parse response: {e}")
+            print(ValueError(f"Failed to parse response: {e}"))
+            return None
 
         
-    def analyze_trend(self, data_str:str, save_prompt=False):
+    def analyze_trend(self, data_str: str, save_prompt=False):
         """Generates a prompt, invokes the LLM, and parses the response."""
-        prompt_chain = self.generate_direction_prompt | self.llm
+        # Render the final prompt with actual data
+        final_prompt = self.generate_direction_prompt.format(data=data_str)
+        
+        # Save prompt if needed
         if save_prompt:
-            prompt_chain.save_prompt("direction_prompt.json")
-        response = prompt_chain.invoke({"data": data_str})
+            os.makedirs("./data/prompts", exist_ok=True)
+            with open("./data/prompts/direction_prompt.txt", "w", encoding="utf-8") as f:
+                f.write(final_prompt)
+        
+        # Invoke the LLM with the formatted prompt
+        response = self.llm.invoke(final_prompt)
+        
         return self._parse_response(response, DirectionBM)
+
 
 class TSDataGenerator:
     def __init__(self, low_thresh=-0.2, high_thresh=0.2, num_points=100):
